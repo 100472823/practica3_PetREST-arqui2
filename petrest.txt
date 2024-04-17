@@ -1,0 +1,23 @@
+TIENDA DE ARTICULOS DE MASCOTA. 
+
+UN CLIENTE  TIENE VARIOS PEDIDOS ; PERO UN PEDIDO NO TIENEE VARIOS CLIENTES., 
+ARTICULOS; ITEMS; TIENEN SU ID; de pedido, un item solo puede pertenecer a un item
+Cantidad de articulos de esa referencia
+
+// ITem es lo que ha pedido, articulo es el de referencia del almacen. 
+
+// Item tienee un id de articulo que es el que le da nombre etc etc 
+
+
+/********************** FACTURA 
+// CADA PEDIDO TIENE UN PEDIDO, RELACION 1-1 
+importe que es la suma de cada item, que es la cantidad 
+// descuento, el de cliente, es un tanto porciento relacionado con el cliente. 
+// Base imponible, que es la suma de descuento importe, iva, 21 % de base, total suma 
+// leer los pedidos y cosntruir las facturas
+
+// HEIDI SQL ADMINISTRADOR DE BASE DE DATOS
+
+// MONTAR PROPIO SERVIDOR 
+
+// XAMPP
