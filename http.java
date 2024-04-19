@@ -6,6 +6,9 @@
 
 // En caso de que el status de la respuesta sea distinto de 200 debe reportarlo y terminar la ejecucion. 
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -139,10 +142,12 @@ public class http {
         // Procesar el cuerpo de la respuesta
         System.out.println(respuesta.body());
 
+        return null;
     }
 
     public static JSONObject Get_Object(String uri) {
 
+        return null;
     }
 
     public static void Delete(String uri) {
