@@ -17,28 +17,32 @@ import java.net.http.HttpResponse;
 import java.net.*;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Base64;
 
 public class http {
 
-    // Abrir la cumunicacion
+    private static String usr;
+    private static String passwd;
+
+
+    // Abrir la comunicacion
     static HttpClient cliente;
 
-    public static void main(String[] args) {
-        cliente = HttpClient.newHttpClient();
-        switch (args[0]) {
-            case "g":
-                Get();
-                break;
-            case "p":
-                Post();
-                break;
-        }
+
+    public static void EstablecerConexion(String usr, String passwd) {
+
+        // Me pasan las credenciales, cosa que voy a almacenar como variable global privada solo para mi clase
+    http.usr= usr;
+    http.passwd = passwd;
+            cliente = HttpClient.newHttpClient();
+            // establezco la conexion
+
     }
 
     private static void Get() {
         // Enviar la petición
-        String uri = "http://10.202.20.125/petrest/articulos/6";
+        String uri = "http://10.202.20.125/petrest/articulos";
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(uri))
                 .header("Content-Type", "application/json")
@@ -58,6 +62,7 @@ public class http {
         int status = respuesta.statusCode();
         if (status != 200) {
             System.err.println("Status=" + status);
+
             System.exit(666);
         }
 
@@ -65,11 +70,11 @@ public class http {
         System.out.println(respuesta.body());
     }
 
-    private static void Post() {
+    public static void Post(String uri1, String json_data) {
         String body = "{\"id_pedido\":1,\"importe\":12.22}";
         String usr_psw = "pareja19:zfTEpynxL";
         String credenciales = Base64.getEncoder().encodeToString(usr_psw.getBytes(StandardCharsets.UTF_8));
-        String uri = "http://10.202.20.125/petrest/facturas";
+        String uri = "http://localhost/petrest/facturas";
 
         // Enviar la petición
         HttpRequest request = HttpRequest.newBuilder()
@@ -116,7 +121,7 @@ public class http {
     public static JSONArray Get_array(String uri1) {
 
         // Enviar la petición
-        String uri = "http://10.202.20.125/petrest" + uri1;
+        String uri = "http://localhost/petrest" + uri1;
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(uri))
                 .header("Content-Type", "application/json")
@@ -137,17 +142,65 @@ public class http {
         if (status != 200) {
             System.err.println("Status=" + status);
             System.exit(666);
+
         }
 
         // Procesar el cuerpo de la respuesta
         System.out.println(respuesta.body());
+        // Tendre que usar para pasar respuesta. body a json.
+        JSONArray array = (JSONArray) JSON_PARSER.Interpretar_json(respuesta.body());
+        JSONObject objeto;
+        int n = array.size();
+        ArrayList<JSONObject> Array1 = new ArrayList<>();
 
+        for (int i = 0; i < n; i++) {
+            objeto = (JSONObject) array.get(i);
+            Array1.add(new JSONObject(objeto));
+        }
+
+        for (JSONObject JSONObject: Array1)
+            System.out.println(JSON_PARSER.SEPARADOR +JSONObject);
+
+        // Aqui me esta devolviendo un nulo cuando
+       // tendria que devolverme un objeto de JSONARR
         return null;
     }
 
-    public static JSONObject Get_Object(String uri) {
+    public static JSONObject Get_Object(String uri1) {
+        // Enviar la petición
+        String uri = "http://localhost/petrest" + uri1;
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(uri))
+                .header("Content-Type", "application/json")
+                .GET()
+                .build();
 
-        return null;
+        // Recoger la respuesta
+        HttpResponse<String> respuesta = null;
+        try {
+            respuesta = cliente.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(666);
+        }
+
+        // Procesar el estado de la respuesta
+        int status = respuesta.statusCode();
+        if (status != 200) {
+            System.err.println("Status=" + status);
+            System.exit(666);
+
+        }
+
+        // Procesar el cuerpo de la respuesta
+        //System.out.println(respuesta.body());
+
+
+        JSONObject obj = (JSONObject) JSON_PARSER.Interpretar_json(respuesta.body());
+        JSONObject Objeto = new JSONObject(obj);
+        //System.out.println(JSON_PARSER.SEPARADOR + Objeto);
+
+        return Objeto;
     }
 
     public static void Delete(String uri) {
@@ -157,5 +210,12 @@ public class http {
     public static void Put(String uri, String json_data) {
 
     }
+
+    // Declaro mi propia clase JSON, para que me devuelva los objetos
+
+
+
+
+
 
 }

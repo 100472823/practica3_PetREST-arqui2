@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/practica3_PetREST.iml" filepath="$PROJECT_DIR$/practica3_PetREST.iml" />
+      <module fileurl="file://$PROJECT_DIR$/practica3_Petrest.iml" filepath="$PROJECT_DIR$/practica3_Petrest.iml" />
     </modules>
   </component>
 </project>
