@@ -19,6 +19,7 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 
 public class http {
 
@@ -71,7 +72,8 @@ public class http {
     }
 
     public static void Post(String uri1, String json_data) {
-        String body = "{\"id_pedido\":1,\"importe\":12.22}";
+        String body = json_data;
+        // String body = "{\"id_pedido\":1,\"importe\":12.22}";
         String usr_psw = "pareja19:zfTEpynxL";
         String credenciales = Base64.getEncoder().encodeToString(usr_psw.getBytes(StandardCharsets.UTF_8));
         String uri = "http://localhost/petrest/facturas";
@@ -149,21 +151,14 @@ public class http {
         System.out.println(respuesta.body());
         // Tendre que usar para pasar respuesta. body a json.
         JSONArray array = (JSONArray) JSON_PARSER.Interpretar_json(respuesta.body());
-        JSONObject objeto;
-        int n = array.size();
-        ArrayList<JSONObject> Array1 = new ArrayList<>();
+        JSONArray jsonArray = new JSONArray();
 
-        for (int i = 0; i < n; i++) {
-            objeto = (JSONObject) array.get(i);
-            Array1.add(new JSONObject(objeto));
+        for (Object obj : array) {
+            JSONObject jsonObj = (JSONObject) obj;
+            jsonArray.add(jsonObj);
         }
 
-        for (JSONObject JSONObject: Array1)
-            System.out.println(JSON_PARSER.SEPARADOR +JSONObject);
-
-        // Aqui me esta devolviendo un nulo cuando
-       // tendria que devolverme un objeto de JSONARR
-        return null;
+        return jsonArray;
     }
 
     public static JSONObject Get_Object(String uri1) {
@@ -207,13 +202,70 @@ public class http {
 
     }
 
-    public static void Put(String uri, String json_data) {
+    // La parte de URI, aqui en el put, sera el numero de factura
+    public static void Put(String uri1, String json_data) {
+
+        // Obteniendo el id de factura,-
+        String body = json_data;
+        // String body = "{\"id_pedido\":1,\"importe\":12.22}";
+        String usr_psw = "pareja19:zfTEpynxL";
+        String credenciales = Base64.getEncoder().encodeToString(usr_psw.getBytes(StandardCharsets.UTF_8));
+        String uri = "http://localhost/petrest/facturas/"+ uri1;
+
+        // Enviar la petición
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(uri))
+                .header("Authorization", "Basic " + credenciales)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body))
+                .build();
+
+        // Recoger la respuesta
+        HttpResponse<String> respuesta = null;
+        try {
+            respuesta = cliente.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(666);
+        }
+
+        // Procesar el estado de la respuesta
+        int status = respuesta.statusCode();
+        if (status != 200) {
+            System.err.println("Status=" + status);
+            System.exit(666);
+        }
+
+        // Procesar el cuerpo de la respuesta
+        System.out.println(respuesta.body());
+
 
     }
 
     // Declaro mi propia clase JSON, para que me devuelva los objetos
 
+ public static String ParseStringPOST(int id_pedido, double importe)
+    {
+        HashMap<String,Object> mapa = new HashMap<>();
+        mapa.put("id_pedido",id_pedido);
+        mapa.put("importe",importe);
 
+        JSONObject jo = new JSONObject(mapa);
+        String json = jo.toString();
+        System.out.println(json);
+        return jo.toString();
+    }
+    public static String ParseStringPUT(int id_pedido, double importe)
+    {
+        HashMap<String,Object> mapa = new HashMap<>();
+        mapa.put("",id_pedido);
+        mapa.put("importe",importe);
+
+        JSONObject jo = new JSONObject(mapa);
+        String json = jo.toString();
+        System.out.println(json);
+        return jo.toString();
+    }
 
 
 
