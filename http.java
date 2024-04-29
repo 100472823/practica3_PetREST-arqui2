@@ -8,6 +8,8 @@
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.net.URI;
 import java.net.URLEncoder;
@@ -39,36 +41,6 @@ public class http {
             cliente = HttpClient.newHttpClient();
             // establezco la conexion
 
-    }
-
-    private static void Get() {
-        // Enviar la petición
-        String uri = "http://10.202.20.125/petrest/articulos";
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(uri))
-                .header("Content-Type", "application/json")
-                .GET()
-                .build();
-
-        // Recoger la respuesta
-        HttpResponse<String> respuesta = null;
-        try {
-            respuesta = cliente.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(666);
-        }
-
-        // Procesar el estado de la respuesta
-        int status = respuesta.statusCode();
-        if (status != 200) {
-            System.err.println("Status=" + status);
-
-            System.exit(666);
-        }
-
-        // Procesar el cuerpo de la respuesta
-        System.out.println(respuesta.body());
     }
 
     public static void Post(String uri1, String json_data) {
@@ -105,6 +77,7 @@ public class http {
         // Procesar el cuerpo de la respuesta
         System.out.println(respuesta.body());
     }
+
 
     public static void Init(String usr, String pasw) {
 
@@ -149,14 +122,18 @@ public class http {
 
         // Procesar el cuerpo de la respuesta
         System.out.println(respuesta.body());
-        // Tendre que usar para pasar respuesta. body a json.
-        JSONArray array = (JSONArray) JSON_PARSER.Interpretar_json(respuesta.body());
-        JSONArray jsonArray = new JSONArray();
 
-        for (Object obj : array) {
-            JSONObject jsonObj = (JSONObject) obj;
-            jsonArray.add(jsonObj);
+
+        // Parseo de la respuesta a JSONArray
+        JSONArray jsonArray = null;
+        try {
+            JSONParser parser = new JSONParser();
+            jsonArray = (JSONArray) parser.parse(respuesta.body());
+        } catch (ParseException e) {
+            e.printStackTrace();
+            System.exit(666);  // Manejo de la excepción de parseo
         }
+
 
         return jsonArray;
     }
@@ -198,26 +175,54 @@ public class http {
         return Objeto;
     }
 
-    public static void Delete(String uri) {
+    public static void Delete(String uri1) {
+        String usr_psw = "Pareja19:zfTEpynxL";  // Username and password for basic auth
+        String credenciales = Base64.getEncoder().encodeToString(usr_psw.getBytes(StandardCharsets.UTF_8));
+        String uri = "http://localhost/petrest/facturas/" +uri1;
 
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(uri))
+                .header("Authorization", "Basic " + credenciales)  // Adding basic auth header
+                .header("Content-Type", "application/json")
+                .DELETE()
+                .build();
+
+        HttpResponse<String> respuesta = null;
+        try {
+            respuesta = cliente.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(666); // Exit with error code on failure
+        }
+
+        // Check the response status code
+        int status = respuesta.statusCode();
+        if (status != 200) { // Check for HTTP 200 status code
+            System.err.println("Status=" + status);
+            System.exit(666); // Exit with error code if status is not 200
+        }
+
+        // Print the response body
+        System.out.println(respuesta.body());
     }
 
-    // La parte de URI, aqui en el put, sera el numero de factura
+    // La parte de URI, aqui en el put, sera el id de factura
     public static void Put(String uri1, String json_data) {
 
-        // Obteniendo el id de factura,-
         String body = json_data;
         // String body = "{\"id_pedido\":1,\"importe\":12.22}";
         String usr_psw = "pareja19:zfTEpynxL";
         String credenciales = Base64.getEncoder().encodeToString(usr_psw.getBytes(StandardCharsets.UTF_8));
         String uri = "http://localhost/petrest/facturas/"+ uri1;
 
+
+
         // Enviar la petición
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(uri))
                 .header("Authorization", "Basic " + credenciales)
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(body))
+                .PUT(HttpRequest.BodyPublishers.ofString(body))
                 .build();
 
         // Recoger la respuesta
@@ -255,11 +260,13 @@ public class http {
         System.out.println(json);
         return jo.toString();
     }
-    public static String ParseStringPUT(int id_pedido, double importe)
+    public static String ParseStringPUT(float descuento, float base,float iva, float total)
     {
         HashMap<String,Object> mapa = new HashMap<>();
-        mapa.put("",id_pedido);
-        mapa.put("importe",importe);
+        mapa.put("descuento",descuento);
+        mapa.put("base",base);
+        mapa.put("iva",iva);
+        mapa.put("total",total);
 
         JSONObject jo = new JSONObject(mapa);
         String json = jo.toString();

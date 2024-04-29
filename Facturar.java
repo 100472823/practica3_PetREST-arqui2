@@ -15,12 +15,11 @@ public class Facturar {
     // Quiero probar que puedo, descargarme los clientes del 1 al 5
 
 
-       // JSONArray ClientesList = http.Get_array("/clientes");
-      // for(int i = 0 ; i < ClientesList.size(); i++){
+       JSONArray ClientesList = http.Get_array("/clientes");
+       for(int i = 0 ; i < ClientesList.size(); i++){
 
-      //      System.out.println(JSON_PARSER.SEPARADOR + ClientesList.get(i));
-       // }
-
+            System.out.println(JSON_PARSER.SEPARADOR + ClientesList.get(i));
+        }
 
 
 
@@ -63,11 +62,39 @@ public class Facturar {
 
         System.out.println(JSON_PARSER.SEPARADOR + ItemsPedido);
 
+        // Se elimina todas las facturas
+        http.Delete("6");
+
         // Crear una Nueva Factura con los id de pedido = 1, y con importe =1235.22
         int pedid4= 4; Double importe = 1235.22;
         String FacturaNueva = http.ParseStringPOST(pedid4, importe);
 
-        http.Post("hola", FacturaNueva);
+        // STRING FORMAT, EL JSON A PELO;
+
+
+        //http.Post("hola", FacturaNueva);
+
+        // Deberia de poder guardarme, el id de la factura.
+        // Por que tengo que meterselo luego
+
+
+        // Me falta de el ultimo post, donde genero la factura
+        // poder guardarme el id, de factura que me devuelve
+
+
+        // Para poder probarlo, se que tengo la factura creada, en el
+
+        // Para crearme el string uri lo genero con parseStringPut
+
+        float descuento = 123.52F;
+        float base = 1111.70F;
+        float iva = 223.46F;
+        float total = 1345.16F;
+
+        String ModificarFactura = http.ParseStringPUT(descuento, base, iva, total);
+
+ //       http.Put("130",ModificarFactura);
+
 
 
 
