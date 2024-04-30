@@ -43,7 +43,7 @@ public class http {
 
     }
 
-    public static void Post(String uri1, String json_data) {
+    public static JSONObject Post(String uri1, String json_data) {
         String body = json_data;
         // String body = "{\"id_pedido\":1,\"importe\":12.22}";
         String usr_psw = "pareja19:zfTEpynxL";
@@ -75,7 +75,13 @@ public class http {
         }
 
         // Procesar el cuerpo de la respuesta
-        System.out.println(respuesta.body());
+      //  System.out.println(respuesta.body());
+        JSONObject obj = (JSONObject) JSON_PARSER.Interpretar_json(respuesta.body());
+        JSONObject Objeto = new JSONObject(obj);
+
+
+        return Objeto;
+
     }
 
 
@@ -121,7 +127,7 @@ public class http {
         }
 
         // Procesar el cuerpo de la respuesta
-        System.out.println(respuesta.body());
+       // System.out.println(respuesta.body());
 
 
         // Parseo de la respuesta a JSONArray
@@ -203,11 +209,11 @@ public class http {
         }
 
         // Print the response body
-        System.out.println(respuesta.body());
+       // System.out.println(respuesta.body());
     }
 
     // La parte de URI, aqui en el put, sera el id de factura
-    public static void Put(String uri1, String json_data) {
+    public static JSONObject Put(String uri1, String json_data) {
 
         String body = json_data;
         // String body = "{\"id_pedido\":1,\"importe\":12.22}";
@@ -242,8 +248,12 @@ public class http {
         }
 
         // Procesar el cuerpo de la respuesta
-        System.out.println(respuesta.body());
+       // System.out.println(respuesta.body());
 
+        JSONObject obj = (JSONObject) JSON_PARSER.Interpretar_json(respuesta.body());
+        JSONObject Objeto = new JSONObject(obj);
+
+        return Objeto;
 
     }
 
@@ -257,7 +267,7 @@ public class http {
 
         JSONObject jo = new JSONObject(mapa);
         String json = jo.toString();
-        System.out.println(json);
+        //System.out.println(json);
         return jo.toString();
     }
     public static String ParseStringPUT(float descuento, float base,float iva, float total)
@@ -270,7 +280,7 @@ public class http {
 
         JSONObject jo = new JSONObject(mapa);
         String json = jo.toString();
-        System.out.println(json);
+      //  System.out.println(json);
         return jo.toString();
     }
 
