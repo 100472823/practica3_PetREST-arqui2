@@ -25,15 +25,7 @@ public class Facturar {
 
         // Quiero probar que puedo, descargarme los clientes del 1 al 5
 
-        JSONArray ClientesList = http.Get_array("/clientes");
-        for (int i = 0; i < ClientesList.size(); i++) {
-
-            System.out.println(JSON_PARSER.SEPARADOR + ClientesList.get(i));
-
-
-
-
-        }
+     int[] ClientesLista=  Requests.Lista("/clientes");
 
         System.out.println("Imprimirmos los 5 Primeros Clientes");
 
@@ -58,11 +50,9 @@ public class Facturar {
 
         for (int i = 1; i <= 5; i++) {
 
-            JSONObject Articulo = http.Get_Object("/articulos/" + i);
+           Articulo ArticuloN=  Requests.Articulo(i);
 
-            Articulo ArticuloN = new Articulo(Articulo);
-
-            System.out.println(JSON_PARSER.SEPARADOR + Articulo.toString());
+            System.out.println(JSON_PARSER.SEPARADOR + ArticuloN.toString());
 
         }
 
