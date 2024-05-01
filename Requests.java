@@ -92,6 +92,20 @@ public class Requests {
 
     }
 
+    public static Factura Factura(int id) {
+
+        // No se si aqui quiere que compruebe en la lista
+        /// Si el indice que me pasan es correcto o no
+
+        JSONObject FacturaNuevo = http.Get_Object("/facturas/"+id);
+        //Con este id, obtenido, creamos el nuevo objeto articulo y devolvemos
+
+        return new Factura(FacturaNuevo);
+
+
+    }
+
+
 
 
 

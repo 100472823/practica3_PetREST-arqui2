@@ -17,12 +17,12 @@ public class Facturar {
         int idFactura = (int) idFacturaLong;
 
         // Imprimir el valor
-        System.out.println("El ID de la factura es: " + idFactura);
+      //  System.out.println("El ID de la factura es: " + idFactura);
         return idFactura;
     }
 
 
-    public static JSONObject convertirAJson(float importe, float descuento, float base, float iva, float total, float ivanum,int id_pedido) {
+    public static JSONObject convertirAJson(float importe, float descuento, float base, float iva, float total, float ivanum, int id_pedido) {
         JSONObject obj = new JSONObject();
         obj.put("importe", importe);
         obj.put("descuento", descuento);
@@ -57,8 +57,7 @@ public class Facturar {
                 // Ya tengo el articulo actual que voy a facturar
 
                 importe += ArticuloNuevo.precio * ItemPedido.cantidad;
-                System.out.println(importe);
-
+             //   System.out.println(importe);
 
 
             }
@@ -72,58 +71,125 @@ public class Facturar {
 
         JSONObject json = convertirAJson(importe, descuento, base, iva, total, ivanum, id_pedido);
 
-        System.out.println(json);
+     //   System.out.println(json);
         //Factura FacturaGenerada = new Factura(json);
 
         return json;
 
     }
 
-        public static void main (String[]args){
-            http.EstablecerConexion("Pareja19", "zfTEpynxL");
-
-            // Quiero probar que puedo, descargarme los clientes del 1 al 5
-
-            int[] PedidosLista = Requests.Lista("/pedidos");
-
-            // Se cuantos pedidos tengo, tendre que procesarlos
-
-            // Recorrerme la lista de pedidos
+    public static void main(String[] args) {
+        http.EstablecerConexion("Pareja19", "zfTEpynxL");
 
 
-            for (int i = 1; i < PedidosLista.length; i++) {
-
-                // Creo un objeto nuevo, del pedido que voy a procesar
-
-                Pedido PedidoNuevo = Requests.Pedido(i);
-
-                // En este pedido Nuevo, tengo los atributos necesarios de pedidoss, que son
-                // Como aqui tengo el id de cliente
-                // Solicito obtener el objeto cliente, de este pedido para saber quien es
-
-                Cliente ClienteNuevo = Requests.Cliente(PedidoNuevo.id_cliente);
-                System.out.println(ClienteNuevo.nombre);
-
-                JSONObject Generada = CalcularFactura(PedidoNuevo.id, ClienteNuevo);
-
-                // JSON OBJECT A POST
-                String Factura = http.parseStringPOST(Generada);
+        /**********************GENERAR FACTURA ************************************************/
 
 
-                // JSON OBJECT a PUT
+        // Quiero probar que puedo, descargarme los clientes del 1 al 5
 
-                String FacturaPut = http.ParseStringPUT(Generada);
+        http.Delete("/6");
+
+        int[] PedidosLista = Requests.Lista("/pedidos");
+
+        // Se cuantos pedidos tengo, tendre que procesarlos
+
+        // Recorrerme la lista de pedidos
+
+
+        for (int i = 1; i < PedidosLista.length; i++) {
+
+            // Creo un objeto nuevo, del pedido que voy a procesar
+
+            Pedido PedidoNuevo = Requests.Pedido(i);
+
+            // En este pedido Nuevo, tengo los atributos necesarios de pedidoss, que son
+            // Como aqui tengo el id de cliente
+            // Solicito obtener el objeto cliente, de este pedido para saber quien es
+
+            Cliente ClienteNuevo = Requests.Cliente(PedidoNuevo.id_cliente);
 
 
 
+            JSONObject Generada = CalcularFactura(PedidoNuevo.id, ClienteNuevo);
+
+            // JSON OBJECT A POST
+            String Factura = http.parseStringPOST(Generada);
+
+
+            // JSON OBJECT a PUT
+
+            String FacturaPut = http.ParseStringPUT(Generada);
+
+            JSONObject idFacturaGenerada = http.Post("Hola", Factura);
+
+            int idFactura = JSONtoInt(idFacturaGenerada);
+
+            http.Put(String.valueOf(idFactura), FacturaPut);
+
+
+        }
+
+
+        /**********************GENERAR FACTURA ************************************************/
+
+        /*********************PROCESAR E IMPRIMIR FACTURA ***********************************/
 
 
 
-                JSONObject idFacturaGenerada = http.Post("Hola",Factura );
+        int[] FacturasLista = Requests.Lista("/facturas");
+        System.out.println("Numero de facturas" + FacturasLista.length);
 
-                int idFactura =  JSONtoInt(idFacturaGenerada);
+        // Recorro todas las facturas que tengo por que tengo que, procesarlas
+        int lengthInicial = FacturasLista[0];
+       int length1 = FacturasLista[FacturasLista.length-1];
 
-                http.Put(String.valueOf(idFactura), FacturaPut);
+        for (int i = lengthInicial; i <= length1; i++) {
+
+            System.out.println("########################################################");
+            System.out.println("FACTURA");
+            Factura FacturaNueva = Requests.Factura(i);
+
+            // En esta factura tengo el id de pedido
+
+            Pedido PedidoAsociado = Requests.Pedido(FacturaNueva.id_pedido);
+
+            Cliente ClienteAsociado = Requests.Cliente(PedidoAsociado.id_cliente);
+            System.out.printf("Cliente:\t%s\n", ClienteAsociado.nombre);
+            System.out.printf("CIF:\t\t%s\n", ClienteAsociado.cif);
+            System.out.printf("Dirección:\t%s\n\n", ClienteAsociado.Direccion);
+
+            System.out.println("Referencia\tNombre\t\t\t\t\t\t\tPrecio\t\tCantidad\tValor");
+            System.out.println("------------------------------------------------------------------------");
+
+            // Me tengo que descargar todos los items asociados
+            // Al id de pedido, para poder imprimirlos
+
+            int[] listaItems = Requests.Lista("/items");
+
+            for (int i1 = 1; i1 < listaItems.length; i1++) {
+
+                Item ItemPedido = Requests.Item(i1);
+                if (PedidoAsociado.id == ItemPedido.id_pedido) {
+
+                    Articulo ArticuloNuevo = Requests.Articulo(ItemPedido.id_articulo);
+                    System.out.printf("%s\t\t%-40s\t%8.2f\t\t%8d\t%8.2f\n",
+                            ArticuloNuevo.referencia,
+                            ArticuloNuevo.nombre,
+                            ArticuloNuevo.precio,
+                            ItemPedido.cantidad,
+                            ArticuloNuevo.precio * ItemPedido.cantidad);
+                }
+            }
+
+            System.out.println("------------------------------------------------------------------------");
+            System.out.printf("%64s %8.2f\n", "Importe:", FacturaNueva.importe);
+            System.out.printf("%64s %8.2f\n", "Descuento:", FacturaNueva.descuento);
+            System.out.printf("%64s %8.2f\n", "Base:", FacturaNueva.base);
+            System.out.printf("%64s %8.2f\n", "IVA:", FacturaNueva.iva);
+            System.out.printf("%64s %8.2f\n", "TOTAL:", FacturaNueva.total);
+            System.out.println("########################################################");
+
+
 
 
             }
@@ -132,3 +198,6 @@ public class Facturar {
         }
 
     }
+
+
+

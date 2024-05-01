@@ -10,14 +10,14 @@ public class Factura {
     public float  total;
 
     public Factura(JSONObject obj) {
-        id = (int) (long) obj.get("id");
-        id_pedido = (int) (long) obj.get("id_pedido");
-        importe = (float) (long) obj.get("importe");
-        descuento = (float) (long) obj.get("descuento");
-        base = (float) (long) obj.get("base");
-        iva = (float) (long) obj.get("iva");
-        total = (float) (long) obj.get("total");
-
+        // Asegurarse de que cada campo se extrae correctamente del JSONObject
+        this.id = ((Number) obj.get("id")).intValue();  // Seguro para cualquier subclase de Number
+        this.id_pedido = ((Number) obj.get("id_pedido")).intValue();
+        this.importe = ((Number) obj.get("importe")).floatValue();
+        this.descuento = ((Number) obj.get("descuento")).floatValue();
+        this.base = ((Number) obj.get("base")).floatValue();
+        this.iva = ((Number) obj.get("iva")).floatValue();
+        this.total = ((Number) obj.get("total")).floatValue();
 
     }
 

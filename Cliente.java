@@ -11,7 +11,7 @@ import org.json.simple.JSONObject;
          id = (int) (long) obj.get("id");
          nombre = (String) obj.get("nombre");
          cif = (String) obj.get("cif");
-         Direccion = (String) obj.get("Direccion");
+         Direccion = (String) obj.get("direccion");
          descuento = (float) (double) obj.get("descuento");
 
      }

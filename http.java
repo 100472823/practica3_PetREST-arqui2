@@ -75,7 +75,7 @@ public class http {
         }
 
         // Procesar el cuerpo de la respuesta
-          System.out.println(respuesta.body());
+      //    System.out.println(respuesta.body());
         JSONObject obj = (JSONObject) JSON_PARSER.Interpretar_json(respuesta.body());
         JSONObject Objeto = new JSONObject(obj);
 
@@ -101,10 +101,13 @@ public class http {
 
     public static JSONArray Get_array(String uri1) {
 
+        String usr_psw = "Pareja19:zfTEpynxL";  // Username and password for basic auth
+        String credenciales = Base64.getEncoder().encodeToString(usr_psw.getBytes(StandardCharsets.UTF_8));
         // Enviar la petición
         String uri = "http://localhost/petrest" + uri1;
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(uri))
+                .header("Authorization", "Basic " + credenciales)  // Adding basic auth header
                 .header("Content-Type", "application/json")
                 .GET()
                 .build();
@@ -146,9 +149,13 @@ public class http {
 
     public static JSONObject Get_Object(String uri1) {
         // Enviar la petición
+
+        String usr_psw = "Pareja19:zfTEpynxL";  // Username and password for basic auth
+        String credenciales = Base64.getEncoder().encodeToString(usr_psw.getBytes(StandardCharsets.UTF_8));
         String uri = "http://localhost/petrest" + uri1;
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(uri))
+                .header("Authorization", "Basic " + credenciales)  // Adding basic auth header
                 .header("Content-Type", "application/json")
                 .GET()
                 .build();
