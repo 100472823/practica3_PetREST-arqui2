@@ -75,7 +75,7 @@ public class http {
         }
 
         // Procesar el cuerpo de la respuesta
-      //  System.out.println(respuesta.body());
+          System.out.println(respuesta.body());
         JSONObject obj = (JSONObject) JSON_PARSER.Interpretar_json(respuesta.body());
         JSONObject Objeto = new JSONObject(obj);
 
@@ -259,29 +259,45 @@ public class http {
 
     // Declaro mi propia clase JSON, para que me devuelva los objetos
 
- public static String ParseStringPOST(int id_pedido, double importe)
-    {
-        HashMap<String,Object> mapa = new HashMap<>();
-        mapa.put("id_pedido",id_pedido);
-        mapa.put("importe",importe);
+    public static String parseStringPOST(JSONObject inputJsonObject) {
+        // Crear un nuevo JSONObject para almacenar los valores extraídos
+        // Crear un nuevo JSONObject para almacenar los valores extraídos
+        JSONObject newJsonObject = new JSONObject();
 
-        JSONObject jo = new JSONObject(mapa);
-        String json = jo.toString();
-        //System.out.println(json);
-        return jo.toString();
+        // Extraer los valores de 'id_pedido' e 'importe' del JSONObject de entrada
+        // Usamos casting porque org.json.simple maneja todo como Object
+        int idPedido = (int) inputJsonObject.get("id_pedido"); // Asumimos que 'id_pedido' es de tipo long
+        float importe = (float) inputJsonObject.get("importe"); // Asumimos que 'importe' es de tipo double
+
+        // Poner los valores extraídos en el nuevo JSONObject
+        newJsonObject.put("id_pedido", idPedido);
+        newJsonObject.put("importe", importe);
+
+        // Convertir el nuevo JSONObject a String JSON
+        return newJsonObject.toJSONString(); // Usar toJSONString para convertir a String
     }
-    public static String ParseStringPUT(float descuento, float base,float iva, float total)
+    public static String ParseStringPUT(JSONObject inputJsonObject)
     {
-        HashMap<String,Object> mapa = new HashMap<>();
-        mapa.put("descuento",descuento);
-        mapa.put("base",base);
-        mapa.put("iva",iva);
-        mapa.put("total",total);
+        // Crear un nuevo JSONObject para almacenar los valores extraídos
+        JSONObject newJsonObject = new JSONObject();
 
-        JSONObject jo = new JSONObject(mapa);
-        String json = jo.toString();
-      //  System.out.println(json);
-        return jo.toString();
+        // Extraer y convertir los valores necesarios del JSONObject de entrada
+        // Se asume que todos los valores son de tipo double y necesitan ser convertidos a float
+        float descuento = ((float) inputJsonObject.get("descuento"));
+        float base = ((float) inputJsonObject.get("base"));
+        float iva = ((float) inputJsonObject.get("iva"));
+        float total = ((float) inputJsonObject.get("total"));
+
+        // Agregar los valores convertidos al nuevo JSONObject
+        newJsonObject.put("descuento", descuento);
+        newJsonObject.put("base", base);
+        newJsonObject.put("iva", iva);
+        newJsonObject.put("total", total);
+
+        // Convertir el nuevo JSONObject a String JSON
+        return newJsonObject.toJSONString();
+
+
     }
 
 
