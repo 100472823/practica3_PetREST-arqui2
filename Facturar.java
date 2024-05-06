@@ -48,9 +48,13 @@ public class Facturar {
 
         int[] listaItems = Requests.Lista("/items");
 
-        for (int i = 1; i < listaItems.length; i++) {
+            System.out.println(listaItems.length+ "ID DEL PEDIDO");
+        for (int i = 0; i < listaItems.length; i++) {
+            if(id_pedido == 33) {
+                System.out.println(listaItems[i]);
+            }
 
-            Item ItemPedido = Requests.Item(i);
+            Item ItemPedido = Requests.Item(listaItems[i]);
             if (id_pedido == ItemPedido.id_pedido) {
 
                 Articulo ArticuloNuevo = Requests.Articulo(ItemPedido.id_articulo);
@@ -96,11 +100,11 @@ public class Facturar {
         // Recorrerme la lista de pedidos
 
 
-        for (int i = 1; i < PedidosLista.length+1; i++) {
+        for (int i = 0; i < PedidosLista.length; i++) {
 
             // Creo un objeto nuevo, del pedido que voy a procesar
 
-            Pedido PedidoNuevo = Requests.Pedido(i);
+            Pedido PedidoNuevo = Requests.Pedido(PedidosLista[i]);
 
 
             // En este pedido Nuevo, tengo los atributos necesarios de pedidoss, que son
@@ -146,7 +150,7 @@ public class Facturar {
         int lengthInicial = FacturasLista[0];
         int length1 = FacturasLista.length;
 
-        for (int i = 0; i <= length1-1; i++) {
+        for (int i = 0; i < length1; i++) {
 
             System.out.println("######################################################################################");
 
@@ -172,9 +176,9 @@ public class Facturar {
 
             int[] listaItems = Requests.Lista("/items");
 
-            for (int i1 = 1; i1 < listaItems.length; i1++) {
+            for (int i1 = 0; i1 < listaItems.length; i1++) {
 
-                Item ItemPedido = Requests.Item(i1);
+                Item ItemPedido = Requests.Item(listaItems[i1]);
                 if (PedidoAsociado.id == ItemPedido.id_pedido) {
 
                     Articulo ArticuloNuevo = Requests.Articulo(ItemPedido.id_articulo);
