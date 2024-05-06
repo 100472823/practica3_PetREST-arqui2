@@ -28,9 +28,6 @@ public class Factura {
         str += "id_pedido=" + id_pedido+ "\n";
         str += "importe=" + total + "\n";
 
-
-
-
         return (str);
     }
 
