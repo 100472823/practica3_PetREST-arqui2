@@ -48,11 +48,9 @@ public class Facturar {
 
         int[] listaItems = Requests.Lista("/items");
 
-            System.out.println(listaItems.length+ "ID DEL PEDIDO");
+
         for (int i = 0; i < listaItems.length; i++) {
-            if(id_pedido == 33) {
-                System.out.println(listaItems[i]);
-            }
+
 
             Item ItemPedido = Requests.Item(listaItems[i]);
             if (id_pedido == ItemPedido.id_pedido) {
@@ -163,9 +161,9 @@ public class Facturar {
 
             Cliente ClienteAsociado = Requests.Cliente(PedidoAsociado.id_cliente);
             System.out.printf("FACTURA\n");
-            System.out.printf("Fecha:\t\t%s\n\n", PedidoAsociado.fecha);
+            System.out.printf("Fecha:\t\t%s\n\n", PedidoAsociado.formatDate(PedidoAsociado.fecha));
             System.out.printf("Cliente:\t%s\n", ClienteAsociado.nombre);
-            System.out.printf("CIF\t\t%s\n", ClienteAsociado.cif);
+            System.out.printf("CIF\t\t\t%s\n", ClienteAsociado.cif);
             System.out.printf("Dirección:\t%s\n\n", ClienteAsociado.Direccion);
             // Encabezados de las columnas
             // Encabezados de las columnas
@@ -198,8 +196,7 @@ public class Facturar {
             System.out.printf("                                                                       Base      %6.2f\n", FacturaNueva.base);
             System.out.printf("                                                                        IVA       %6.2f\n", FacturaNueva.iva);
             System.out.printf("                                                                      TOTAL      %6.2f\n", FacturaNueva.total);
-            System.out.println("######################################################################################\n\n");
-
+           
 
 
             }
