@@ -2,6 +2,7 @@
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import java.util.Locale;
 
 public class Facturar {
 
@@ -137,7 +138,7 @@ public class Facturar {
 
         /*********************PROCESAR E IMPRIMIR FACTURA ***********************************/
 
-
+        Locale.setDefault(new Locale("es", "ES")); // Establece el Locale a España para usar comas
 
         int[] FacturasLista = Requests.Lista("/facturas");
         //System.out.println("Numero de facturas" + FacturasLista.length);
@@ -145,12 +146,9 @@ public class Facturar {
 
         // Mirar para recorrer el tema de las Facturas Listas.
         // Recorro todas las facturas que tengo por que tengo que, procesarlas
-        int lengthInicial = FacturasLista[0];
         int length1 = FacturasLista.length;
 
         for (int i = 0; i < length1; i++) {
-
-            System.out.println("######################################################################################");
 
 
             Factura FacturaNueva = Requests.Factura(FacturasLista[i]);
@@ -160,43 +158,45 @@ public class Facturar {
             Pedido PedidoAsociado = Requests.Pedido(FacturaNueva.id_pedido);
 
             Cliente ClienteAsociado = Requests.Cliente(PedidoAsociado.id_cliente);
-            System.out.printf("FACTURA\n");
-            System.out.printf("Fecha:\t\t%s\n\n", PedidoAsociado.formatDate(PedidoAsociado.fecha));
-            System.out.printf("Cliente:\t%s\n", ClienteAsociado.nombre);
-            System.out.printf("CIF\t\t\t%s\n", ClienteAsociado.cif);
-            System.out.printf("Dirección:\t%s\n\n", ClienteAsociado.Direccion);
-            // Encabezados de las columnas
-            // Encabezados de las columnas
-            // Encabezados de las columnas
-            System.out.println(String.format("%-10s %-50s %-10s %-10s %-10s", "Referencia", "Nombre", "Precio", "Cantidad", "Valor"));
+            System.out.println("######################################################################################");
+            System.out.println("FACTURA");
+            System.out.printf("%-15s %s\n","Fecha:",PedidoAsociado.formatDate(PedidoAsociado.fecha));
+            System.out.println();
+            System.out.printf("%-15s %s\n","Cliente:",ClienteAsociado.nombre);
+            System.out.printf("%-15s %s\n","CIF",ClienteAsociado.cif);
+            System.out.printf("%-15s %s\n","Dirección:",ClienteAsociado.Direccion);
+            System.out.println();
+            System.out.printf("%-10s %-50s %6s %8s %8s\n","Referencia","Nombre","Precio","Cantidad","Valor");
             System.out.println("--------------------------------------------------------------------------------------");
+            // Encabezados de las columnas
+            // Encabezados de las columnas
+            // Encabezados de las columnas
+
 
 
             int[] listaItems = Requests.Lista("/items");
-
             for (int i1 = 0; i1 < listaItems.length; i1++) {
 
                 Item ItemPedido = Requests.Item(listaItems[i1]);
                 if (PedidoAsociado.id == ItemPedido.id_pedido) {
 
                     Articulo ArticuloNuevo = Requests.Articulo(ItemPedido.id_articulo);
-                    System.out.println(String.format("%-10s %-50s %10s %10d %10.2f",
-                            ArticuloNuevo.referencia,
-                            ArticuloNuevo.nombre,
-                            String.format("%.2f", ArticuloNuevo.precio).replace(".", ","), // Cambio de punto a coma para los decimales
-                            ItemPedido.cantidad,
-                            ArticuloNuevo.precio * ItemPedido.cantidad));
+                    System.out.printf(
+                            Locale.getDefault(),
+                            "%-10s %-50s %6.2f %8d %8.2f\n"
+                            ,ArticuloNuevo.referencia,ArticuloNuevo.nombre
+                            ,ArticuloNuevo.precio,ItemPedido.cantidad, ArticuloNuevo.precio*ItemPedido.cantidad);
 
                 }
             }
 
-            System.out.println("--------------------------------------------------------------------------------------");
-            System.out.printf("                                                                    Importe      %6.2f\n", FacturaNueva.importe);
-            System.out.printf("                                                                  Descuento       %6.2f\n", FacturaNueva.descuento);
-            System.out.printf("                                                                       Base      %6.2f\n", FacturaNueva.base);
-            System.out.printf("                                                                        IVA       %6.2f\n", FacturaNueva.iva);
-            System.out.printf("                                                                      TOTAL      %6.2f\n", FacturaNueva.total);
-           
+            System.out.println("                                                               -----------------------");
+            System.out.printf("%75s %10.2f\n","Importe",FacturaNueva.importe);
+            System.out.printf("%75s %10.2f\n","Descuento",FacturaNueva.descuento);
+            System.out.printf("%75s %10.2f\n","Base",FacturaNueva.base);
+            System.out.printf("%75s %10.2f\n","IVA",FacturaNueva.iva);
+            System.out.println("                                                               -----------------------");
+            System.out.printf("%75s %10.2f\n","TOTAL",FacturaNueva.total);
 
 
             }

@@ -40,7 +40,7 @@ public class Pedido {
     }
     // Método para formatear la fecha en el formato deseado
     public String formatDate(Date date) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         return sdf.format(date);
     }
 
